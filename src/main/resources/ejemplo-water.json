@@ -1,0 +1,16 @@
+{
+  "provision" : {
+    "device" : {
+      "identifier" : "e05e4354-ffe0-4cfa-8030-f6b9500b64ab",
+      "name" : "dispositivo1",
+      "description" : "dispositivo medidor de flujo de agua 1"
+    }
+  },
+  "water" : {
+    "imported" : {
+      "flowRate" : {
+        "current" : "5.0"
+      }
+    }
+  }
+}
