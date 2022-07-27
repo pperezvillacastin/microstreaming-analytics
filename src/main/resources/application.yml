@@ -11,3 +11,5 @@ spring:
     port: ${RABBITMQ_PORT}
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
+
+rabbitmq.consumer.queuename: ${RABBITMQ_QUEUENAME}

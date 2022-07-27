@@ -1,0 +1,15 @@
+spring:
+  mongodb.embedded.version: 4.0.2
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: test
+      password: test
+      database: testdb
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: test
+    password: test
+rabbitmq.consumer.queuename: msa-queue
