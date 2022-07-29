@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 @Component
 @Log
@@ -43,7 +44,7 @@ public class ScheduledRabbitMQReceiver {
     private static final String dataToExtract = "flowrate";
 
 
-    @Scheduled(fixedRate =30000)
+    @Scheduled(fixedRateString = "${queue.read.rate}")
     public void readQueue() throws IOException, TimeoutException {
         try {
             log.info("Start");
@@ -54,17 +55,21 @@ public class ScheduledRabbitMQReceiver {
             factory.setPassword(password);
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
-            AMQP.Queue.DeclareOk declareOk = channel.queueDeclare(queue, false, false, false, null);
+            AMQP.Queue.DeclareOk declareOk = channel.queueDeclarePassive(queue);
 
             DescriptiveStatistics descriptiveStatistics = new DescriptiveStatistics();
             List<Double> dataList = new LinkedList<Double>();
+            GetResponse getResponse = null;
             do {
-                GetResponse getResponse = channel.basicGet(queue, true);
+                getResponse = channel.basicGet(queue, true);
+                if (getResponse == null) break;
                 String jsonBody = new String(getResponse.getBody());
                 descriptiveStatistics.addValue(extractDataStreamSingleValue(jsonBody,dataToExtract));
                 dataList.add(extractDataStreamSingleValue(jsonBody,dataToExtract));
             }
-            while (declareOk.getMessageCount() > 0);
+            while (getResponse != null);
+            channel.close();
+            connection.close();
 
 
 
@@ -85,6 +90,11 @@ public class ScheduledRabbitMQReceiver {
                     descriptiveStatistics.getMin() // min
             );
             StatisticalData result = statisticalDataRepository.insert(statisticalData);
+            String listString = dataList.stream().map(Object::toString).collect(Collectors.joining(", "));
+            log.info("data set:");
+            log.info(listString);
+            log.info("result set:");
+            log.info(result.toString());
         } catch (Exception e) {
             log.info(ExceptionUtils.getStackTrace(e));
         }
