@@ -38,6 +38,7 @@ services:
       - MONGODB_USERNAME=mongoadmin
       - MONGODB_PASSWORD=mongopass
       - MONGODB_DATABASE=microstreaming-analytics-db
+      - QUEUE_READ_RATE=30000
   rabbitmq-producer:
     image: rabbitmq-producer:0.0.1-SNAPSHOT
     restart: unless-stopped
@@ -49,3 +50,4 @@ services:
       - RABBITMQ_USERNAME=rabbitmquser
       - RABBITMQ_PASSWORD=rabbitmqpass
       - RABBITMQ_QUEUENAME=msa-queue
+      - QUEUE_WRITE_RATE=5000

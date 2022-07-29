@@ -12,3 +12,4 @@ spring:
     username: test
     password: test
 rabbitmq.consumer.queuename: msa-queue
+queue.read.rate: 30000
