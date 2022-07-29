@@ -13,6 +13,10 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>microstreaming-analytics</name>
   <description>Microstreaming Analytics Module</description>
+  <scm>
+    <developerConnection>scm:git:https://github.com/pperezvillacastin/microstreaming-analytics.git</developerConnection>
+    <tag>v0.0.1-SNAPSHOT</tag>
+  </scm>
   <properties>
     <java.version>11</java.version>
   </properties>
