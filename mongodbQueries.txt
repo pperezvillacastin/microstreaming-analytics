@@ -1,0 +1,5 @@
+Referencia para mi 
+Borrar todo en una colección
+microstreaming-analytics-db> db.statisticalData.deleteMany({})
+{ acknowledged: true, deletedCount: 50 }
+microstreaming-analytics-db> db.statisticalData.find
