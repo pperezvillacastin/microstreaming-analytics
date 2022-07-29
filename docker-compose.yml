@@ -1,0 +1,51 @@
+version: '3.0'
+services:
+  rabbitmq:
+    image: rabbitmq:latest
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: unless-stopped
+    #usuario pass de rabbitmq por defecto = test/test
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmquser
+      - RABBITMQ_DEFAULT_PASS=rabbitmqpass
+  mongodb:
+    image: mongo:5.0.9
+    ports:
+      - 27017:27017
+    volumes:
+      - ../mongodata:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=microstreaming-analytics-db
+  microstreaming-analytics:
+    image: microstreaming-analytics:0.0.1-SNAPSHOT
+    restart: unless-stopped
+    depends_on: 
+      - rabbitmq
+      - mongodb
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=rabbitmquser
+      - RABBITMQ_PASSWORD=rabbitmqpass
+      - RABBITMQ_QUEUENAME=msa-queue
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+      - MONGODB_USERNAME=mongoadmin
+      - MONGODB_PASSWORD=mongopass
+      - MONGODB_DATABASE=microstreaming-analytics-db
+  rabbitmq-producer:
+    image: rabbitmq-producer:0.0.1-SNAPSHOT
+    restart: unless-stopped
+    depends_on: 
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=rabbitmquser
+      - RABBITMQ_PASSWORD=rabbitmqpass
+      - RABBITMQ_QUEUENAME=msa-queue
