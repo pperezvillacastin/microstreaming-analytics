@@ -44,7 +44,7 @@ public class ScheduledRabbitMQReceiver {
     private static final String dataToExtract = "flowrate";
 
 
-    @Scheduled(fixedRateString = "${queue.read.rate}")
+    @Scheduled(fixedRateString = "${queue.read.rate}" , initialDelay = 20000)
     public void readQueue() throws IOException, TimeoutException {
         try {
             log.info("Start");
@@ -131,6 +131,8 @@ public class ScheduledRabbitMQReceiver {
     // de entrada entera. Saco este otro ejemplo de Stack Overflow (sabria
     // calcularla para integers pero no para doubles)
     // https://stackoverflow.com/a/38937305
+    // Generalmente va a devolver todos los elementos de entrada a no ser que deliberadamente
+    // repitamos alguno
     private static Set<Double> getMode(double[] data) {
         if (data.length == 0) {
             return new TreeSet<>();

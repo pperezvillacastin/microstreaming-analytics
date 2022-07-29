@@ -50,4 +50,4 @@ services:
       - RABBITMQ_USERNAME=rabbitmquser
       - RABBITMQ_PASSWORD=rabbitmqpass
       - RABBITMQ_QUEUENAME=msa-queue
-      - QUEUE_WRITE_RATE=5000
+      - QUEUE_WRITE_RATE=2500
