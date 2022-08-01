@@ -1,18 +1,11 @@
 package ejercicio.ampliaiot.microstreaminganalytics;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
-import ejercicio.ampliaiot.microstreaminganalytics.persistencia.StatisticalData;
-import ejercicio.ampliaiot.microstreaminganalytics.persistencia.StatisticalDataRepository;
 import lombok.extern.java.Log;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.math3.stat.Frequency;
-import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 @Component
 @Log
@@ -39,7 +31,7 @@ public class ScheduledRabbitMQReceiver {
     private String queue ;
 
     @Autowired
-    StatisticalDataWriter statisticalDataWriter;
+    StatisticalDataWriterService statisticalDataWriter;
 
 
     //Esto no deberia estar hardcodeado

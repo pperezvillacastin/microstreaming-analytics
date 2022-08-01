@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +18,7 @@ public class StatisticalData {
     private Date readTime;
     private Double media;
     private Double mediana;
-    private Set<Double> moda;
+    private List<Double> moda;
     private Double stddev;
     private List<Double> cuartiles;
     private Double maxVal;

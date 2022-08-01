@@ -4,6 +4,7 @@ import ejercicio.ampliaiot.microstreaminganalytics.persistencia.StatisticalData;
 import ejercicio.ampliaiot.microstreaminganalytics.persistencia.StatisticalDataRepository;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,13 @@ import java.util.stream.Collectors;
 
 @Log
 @Component
-public class StatisticalDataWriter {
+public class StatisticalDataWriterService {
 
     @Autowired
     StatisticalDataRepository statisticalDataRepository;
 
 
-    public void dataListToStatisticalData(List<Double> dataList, String dataToExtract) {
+    public StatisticalData dataListToStatisticalData(List<Double> dataList, String dataToExtract) {
         DescriptiveStatistics descriptiveStatistics = new DescriptiveStatistics();
         dataList.stream().forEach(c->descriptiveStatistics.addValue(c));
         StatisticalData statisticalData = new StatisticalData(
@@ -40,49 +41,40 @@ public class StatisticalDataWriter {
                 descriptiveStatistics.getMax(), // max
                 descriptiveStatistics.getMin() // min
         );
-        StatisticalData result = statisticalDataRepository.insert(statisticalData);
         String listString = dataList.stream().map(Object::toString).collect(Collectors.joining(", "));
         log.info("data set:");
         log.info(listString);
         log.info("result set:");
-        log.info(result.toString());
+        log.info(statisticalData.toString());
+        try {
+            statisticalDataRepository.insert(statisticalData);
+        }
+        catch(Exception e) {
+            log.severe("Database write failed " + ExceptionUtils.getStackTrace(e));
+            throw e;
+        }
+        return statisticalData;
+
     }
 
-    // He intentado calcula la moda con apache commons pero me devolvia la lista
-    // de entrada entera. Saco este otro ejemplo de Stack Overflow (sabria
-    // calcularla para integers pero no para doubles)
-    // https://stackoverflow.com/a/38937305
-    // Generalmente va a devolver todos los elementos de entrada a no ser que deliberadamente
-    // repitamos alguno
-    private static Set<Double> getMode(double[] data) {
-        if (data.length == 0) {
-            return new TreeSet<>();
+    private static List<Double> getMode(double[] data) {
+        //El problema que habia con este metodo es que la lista de datos era
+        //demasiado pequeña y la precision de los doubles demasiado alta
+        //como para obtener coincidencias.
+
+        //Habiendo reducido los decimales de los doubles a uno
+        // e incrementando la cantidad de datos por lectura a unos 300
+        // ya no hay este problema y prefiero usar Apache Commons
+        // a un resultado aleatorio de internet
+        double[] modearray = StatUtils.mode(data);
+        List<Double> modeList = new ArrayList<Double>();
+        for (double primitivo : modearray) {
+            modeList.add(primitivo);
         }
-        TreeMap<Double, Integer> map = new TreeMap<>(); //Map Keys are array values and Map Values are how many times each key appears in the array
-        for (int index = 0; index != data.length; ++index) {
-            double value = data[index];
-            if (!map.containsKey(value)) {
-                map.put(value, 1); //first time, put one
-            }
-            else {
-                map.put(value, map.get(value) + 1); //seen it again increment count
-            }
-        }
-        Set<Double> modes = new TreeSet<>(); //result set of modes, min to max sorted
-        int maxCount = 1;
-        Iterator<Integer> modeApperance = map.values().iterator();
-        while (modeApperance.hasNext()) {
-            maxCount = Math.max(maxCount, modeApperance.next()); //go through all the value counts
-        }
-        for (double key : map.keySet()) {
-            if (map.get(key) == maxCount) { //if this key's value is max
-                modes.add(key); //get it
-            }
-        }
-        return modes;
+        return modeList;
     }
 
-    private static Set<Double> getMode(List<Double> dataList){
+    private static List<Double> getMode(List<Double> dataList){
         return getMode(StatUtils.mode(dataList.stream().mapToDouble(Double::doubleValue).toArray()));
     }
 
