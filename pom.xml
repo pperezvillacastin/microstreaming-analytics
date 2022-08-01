@@ -10,12 +10,12 @@
   </parent>
   <groupId>ejercicio.ampliaiot</groupId>
   <artifactId>microstreaming-analytics</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3-SNAPSHOT</version>
   <name>microstreaming-analytics</name>
   <description>Microstreaming Analytics Module</description>
   <scm>
     <developerConnection>scm:git:https://github.com/pperezvillacastin/microstreaming-analytics.git</developerConnection>
-    <tag>microstreaming-analytics-0.0.2</tag>
+    <tag>v0.0.1-SNAPSHOT</tag>
   </scm>
   <properties>
     <java.version>11</java.version>
