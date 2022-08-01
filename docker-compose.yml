@@ -22,7 +22,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=root
       - MONGO_INITDB_DATABASE=microstreaming-analytics-db
   microstreaming-analytics:
-    image: microstreaming-analytics:0.0.3-SNAPSHOT
+    image: microstreaming-analytics:0.0.3
     restart: unless-stopped
     depends_on: 
       - rabbitmq
