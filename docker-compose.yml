@@ -22,7 +22,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=root
       - MONGO_INITDB_DATABASE=microstreaming-analytics-db
   microstreaming-analytics:
-    image: microstreaming-analytics:0.0.1
+    image: microstreaming-analytics:0.0.2-SNAPSHOT
     restart: unless-stopped
     depends_on: 
       - rabbitmq
@@ -38,9 +38,9 @@ services:
       - MONGODB_USERNAME=mongoadmin
       - MONGODB_PASSWORD=mongopass
       - MONGODB_DATABASE=microstreaming-analytics-db
-      - QUEUE_READ_RATE=30000
+      - QUEUE_READ_RATE=10000
   rabbitmq-producer:
-    image: rabbitmq-producer:0.0.1
+    image: rabbitmq-producer:0.0.2-SNAPSHOT
     restart: unless-stopped
     depends_on: 
       - rabbitmq
@@ -50,4 +50,4 @@ services:
       - RABBITMQ_USERNAME=rabbitmquser
       - RABBITMQ_PASSWORD=rabbitmqpass
       - RABBITMQ_QUEUENAME=msa-queue
-      - QUEUE_WRITE_RATE=2500
+      - QUEUE_WRITE_RATE=30000
